@@ -204,8 +204,12 @@ class UserServiceTest {
                     null
             );
 
-            doReturn(Optional.of(user)).when(userRepository).findById(uuidArgumentCaptor.capture());
-            doReturn(user).when(userRepository).save(userArgumentCaptor.capture());
+            doReturn(Optional.of(user))
+                    .when(userRepository)
+                    .findById(uuidArgumentCaptor.capture());
+            doReturn(user)
+                    .when(userRepository)
+                    .save(userArgumentCaptor.capture());
 
             userService.updateUserById(user.getUserId().toString(), updateUserDto);
 
@@ -216,6 +220,28 @@ class UserServiceTest {
 
             verify(userRepository, times(1)).findById(uuidArgumentCaptor.getValue());
             verify(userRepository, times(1)).save(user);
+        }
+
+        @Test
+        @DisplayName("Should not update user by id when user not exist")
+        void shouldNotUpdateUserWhenUserNotExist() {
+            var updateUserDto = new UpdateUserDto(
+                    "maria",
+                    "111"
+            );
+            var userId = UUID.randomUUID();
+
+            doReturn(Optional.empty())
+                    .when(userRepository)
+                    .findById(uuidArgumentCaptor.capture());
+
+
+            userService.updateUserById(userId.toString(), updateUserDto);
+
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+
+            verify(userRepository, times(1)).findById(uuidArgumentCaptor.getValue());
+            verify(userRepository, times(0)).save(any());
         }
     }
 
