@@ -1,5 +1,6 @@
 package duarte.br.agregadordeinvestimentos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,6 +23,7 @@ public class User {
     @UpdateTimestamp
     private Instant updateTimeStamp;
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Account> accounts;
 
     public User() {
